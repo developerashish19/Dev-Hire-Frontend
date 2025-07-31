@@ -1,51 +1,92 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react"; // Optional: use emojis or other icons if not installed
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { getLoggedInUser, logoutUser } from "../../utils/auth";
+import { Menu, X } from "lucide-react"; // optional icons
 
 const Navbar = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState(null);
 
-  const toggleMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
+  const toggleMenu = () => setMobileOpen(!mobileOpen);
+
+  const handleLogout = () => {
+    logoutUser();
+    setUser(null);
+    navigate("/login");
   };
+
+  useEffect(() => {
+    const user = getLoggedInUser();
+    setUser(user);
+  }, []);
+
+  const NavLinks = () => (
+    <>
+      <Link to="/" className="hover:text-blue-600">Home</Link>
+      <Link to="/jobs-listings" className="hover:text-blue-600">Jobs</Link>
+      <Link to="/dashboard" className="hover:text-blue-600">Dashboard</Link>
+      <Link to="/contact" className="hover:text-blue-600">Contact</Link>
+      <Link to="/candidates" className="hover:text-blue-600">Candidate</Link>
+    </>
+  );
 
   return (
     <nav className="bg-white shadow-md">
-      <div className="flex justify-between items-center px-6 py-4 container mx-auto">
-        {/* Logo */}
-        <Link to="/" className="text-2xl font-bold text-blue-600">
-          DevHire
-        </Link>
+      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+        <Link to="/" className="text-2xl font-bold text-blue-600">DevHire</Link>
 
-        {/* Desktop Navigation */}
-        <ul className="hidden md:flex gap-6 text-gray-700">
-          <li><Link to="/" className="hover:text-blue-600">Home</Link></li>
-          <li><Link to="/jobs-listings" className="hover:text-blue-600">Jobs</Link></li>
-          <li><Link to="/dashboard" className="hover:text-blue-600">Dashboard</Link></li>
-          <li><Link to="/contact" className="hover:text-blue-600">Contact</Link></li>
-          <li><Link to="/login" className="hover:text-blue-600">Login</Link></li>
-          <li><Link to="/register" className="hover:text-blue-600">Register</Link></li>
-          <li><Link to="/candidates" className="hover:text-blue-600">Candidate Dashboard</Link></li>
-        </ul>
-
-        {/* Mobile menu icon */}
-        <div className="md:hidden">
-          <button onClick={toggleMenu} className="text-gray-700 focus:outline-none">
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+        {/* Desktop */}
+        <div className="hidden md:flex items-center gap-6 text-gray-700">
+          <NavLinks />
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="text-red-500 ml-4 hover:underline"
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link to="/login" className="hover:text-blue-600">Login</Link>
+              <Link
+                to="/register"
+                className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
+              >
+                Register
+              </Link>
+            </>
+          )}
         </div>
+
+        {/* Mobile */}
+        <button className="md:hidden" onClick={toggleMenu}>
+          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
 
-      {/* Mobile Dropdown Menu */}
-      {mobileMenuOpen && (
+      {/* Mobile Menu */}
+      {mobileOpen && (
         <div className="md:hidden px-6 pb-4 space-y-2 bg-white shadow">
-          <Link to="/" onClick={toggleMenu} className="block text-gray-700 hover:text-blue-600">Home</Link>
-          <Link to="/jobs-listings" onClick={toggleMenu} className="block text-gray-700 hover:text-blue-600">Jobs</Link>
-          <Link to="/dashboard" onClick={toggleMenu} className="block text-gray-700 hover:text-blue-600">Dashboard</Link>
-          <Link to="/contact" onClick={toggleMenu} className="block text-gray-700 hover:text-blue-600">Contact</Link>
-          <Link to="/login" onClick={toggleMenu} className="block text-gray-700 hover:text-blue-600">Login</Link>
-          <Link to="/register" onClick={toggleMenu} className="block text-gray-700 hover:text-blue-600">Register</Link>
-          <Link to="/candidates" onClick={toggleMenu} className="block text-gray-700 hover:text-blue-600">Candidate Dashboard</Link>
+          <NavLinks />
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="block text-red-500"
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link to="/login" className="block text-gray-700 hover:text-blue-600">Login</Link>
+              <Link
+                to="/register"
+                className="block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                Register
+              </Link>
+            </>
+          )}
         </div>
       )}
     </nav>

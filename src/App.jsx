@@ -14,7 +14,7 @@ import InterviewRoom from "./pages/InterviewRoom";
 import PostJob from "./pages/PostJob";
 import JobListings from "./pages/JobListings";
 import Contact from "./pages/Contact";
-
+import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   return (
     <Router>
@@ -33,6 +33,13 @@ function App() {
         <Route path="/post-job" element={<PostJob />} />
         <Route path="/jobs-listings" element={<JobListings />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>
+          
+  
+    
+      
+  }
+/>
       </Routes>
 
       <Footer />

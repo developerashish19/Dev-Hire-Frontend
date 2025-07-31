@@ -1,45 +1,57 @@
-import React from "react";
-import Navbar from "../components/layout/Navbar";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { saveUser } from "../utils/auth";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    saveUser(form);
+    alert("Registered successfully!");
+    navigate("/login");
+  };
+
   return (
-    <div>
-      <Navbar />
-
-      <section className="flex justify-center items-center min-h-screen bg-gray-50">
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-          <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Register on DevHire</h2>
-
-          <form>
-            <input
-              type="text"
-              placeholder="Full Name"
-              className="w-full mb-4 px-4 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full mb-4 px-4 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full mb-4 px-4 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-            />
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
-            >
-              Register
-            </button>
-          </form>
-
-          <p className="mt-4 text-center text-sm text-gray-600">
-            Already have an account? <a href="#" className="text-blue-600">Login</a>
-          </p>
-        </div>
-      </section>
+    <div className="min-h-screen flex justify-center items-center bg-gray-100">
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-80">
+        <h2 className="text-xl font-bold mb-4">Register</h2>
+        <input
+          type="text"
+          name="name"
+          placeholder="Name"
+          value={form.name}
+          onChange={handleChange}
+          className="w-full p-2 mb-2 border rounded"
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          className="w-full p-2 mb-2 border rounded"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
+          className="w-full p-2 mb-4 border rounded"
+          required
+        />
+        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
+          Register
+        </button>
+      </form>
     </div>
   );
 };

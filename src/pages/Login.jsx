@@ -1,40 +1,53 @@
-import React from "react";
-import Navbar from "../components/layout/Navbar";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { loginUser } from "../utils/auth";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const success = loginUser(form.email, form.password);
+    if (success) {
+      navigate("/dashboard");
+    } else {
+      setError("Invalid email or password");
+    }
+  };
+
   return (
-    <div>
-      <Navbar />
-
-      <section className="flex justify-center items-center min-h-screen bg-gray-50">
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-          <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Login to DevHire</h2>
-
-          <form>
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full mb-4 px-4 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full mb-4 px-4 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-            />
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
-            >
-              Login
-            </button>
-          </form>
-
-          <p className="mt-4 text-center text-sm text-gray-600">
-            Don’t have an account? <a href="#" className="text-blue-600">Register</a>
-          </p>
-        </div>
-      </section>
+    <div className="min-h-screen flex justify-center items-center bg-gray-100">
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-80">
+        <h2 className="text-xl font-bold mb-4">Login</h2>
+        {error && <p className="text-red-500 mb-2">{error}</p>}
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          className="w-full p-2 mb-2 border rounded"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
+          className="w-full p-2 mb-4 border rounded"
+          required
+        />
+        <button type="submit" className="w-full bg-green-600 text-white p-2 rounded">
+          Login
+        </button>
+      </form>
     </div>
   );
 };
